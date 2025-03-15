@@ -32,6 +32,7 @@ pub fn init_sql() -> SqliteResult<()> {
         )",
         () 
     )?;
+    conn_data.execute("INSERT INTO user (user_name, password) VALUES (?1, ?2)", ("admin", "123456")).unwrap();
 
     conn_log.execute(
         "CREATE TABLE log (
