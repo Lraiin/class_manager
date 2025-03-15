@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更多操作</title>
+    <link rel="icon" type="image/png" href="./assets/icon.png">
+    <!-- Tailwind CSS -->
+    <script src="./lib/tailwindcss@3.js"></script>
+    <link rel="stylesheet" href="./lib/daisyui@4.7.2.css">
+
+    <script src="./lib/alpinejs@3.js" defer></script>
+
+    <style>
+      ::-webkit-scrollbar {
+        width: 0px;
+      }
+    </style>
+</head>
+<body class="flex-col flex justify-center items-center">
+      <div class="navbar bg-base-100 shadow-sm">
+        <div class="navbar-start">
+          <div class="dropdown">
+            <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /> </svg>
+            </div>
+            <ul
+              tabindex="0"
+              class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+              <li><a href="/">首页</a></li>
+              <li><a href="/operations.html">计数日志</a></li>
+              <li><a href="/operations.html">更多操作</a></li>
+            </ul>
+          </div>
+          <a class="btn btn-ghost text-xl">
+            <img src="./assets/icon.png" class="w-8" alt="">
+            班级积分管理
+          </a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal px-1  w-[20rem] flex justify-between">
+            <li><a href="/">首页</a></li>
+            <li><a href="log.html">计分日志</a></li>
+            <li><a href="operations.html">更多操作</a></li>
+          </ul>
+        </div>
+        <div class="navbar-end">
+          <a href="ai.html" class="btn">AI 辅助分析</a>
+        </div>
+    </div>
+    <main x-data="{ ...describe_data(), ...operactions() }" x-init="console.log('Alpine Context:', $data)" class="flex justify-around p-5 w-2/3">
+        <!-- 操作备注 -->
+        <div class="rounded-box border border-base-content/5 bg-base-100 shadow-sm p-6">
+            <div>
+                <select x-model="selected_describe_state" class="select max-w-xs border border-base-content/10">
+                    <option value="" disabled selected>加分/扣分</option>
+                    <option>加分</option>
+                    <option>扣分</option>
+                  </select>
+                  <input x-model="description_text" type="text" placeholder="输入备注" class="input input-bordered max-w-xs" />
+                  <button @click="add_describe()" class="btn btn-outline btn-accent">保存</button>
+            </div>
+            <div class="flex gap-3">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-base">备注</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="describe in addCredits_description">
+                          <tr>
+                            <td x-text="describe"></td>
+                            <td><a @click="delete_describe(describe)" class="text-red-500 hover:text-red-300 cursor-pointer">删除</a></td>
+                          </tr>
+                        </template>
+                    </tbody>
+                  </table>
+
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th class="text-base">备注</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="describe in subtractCredits_description">
+                          <tr>
+                            <td x-text="describe"></td>
+                            <td><a @click="delete_describe(describe)" class="text-red-500 hover:text-red-300 cursor-pointer">删除</a></td>
+                          </tr>
+                        </template>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+
+        <!-- 批量添加 -->
+        <div class="w-96 flex flex-col items-center gap-5 rounded-box border border-base-content/5 bg-base-100 shadow-sm p-6">
+          <label class="form-control w-full max-w-xs">
+            <div class="label">
+              <span class="label-text">批量添加名单，请遵循以下格式：</span>
+            </div>
+            <textarea
+            x-model="batch_add_list"
+            placeholder="1184220836 小明&#10;1184220837 小李&#10;1184220838 小张"
+            class="textarea textarea-bordered textarea-lg w-full h-60 max-w-xs"></textarea>
+          </label>
+          <label class="form-control w-full max-w-xs">
+            <div class="label">
+              <span class="label-text">设置默认初始积分：</span>
+            </div>
+            <input x-model="init_credits" type="number" step="0.5" min="0" placeholder="" class="input input-bordered w-full max-w-xs" />
+          </label>
+          <button @click="batch_add()" class="btn btn-outline btn-accent w-full">批量添加</button>
+        </div>
+    </main>
+
+    <script src="./js/describe_data.js"></script>
+    <script src="./js/operations.js"></script>
+</body>
+</html>

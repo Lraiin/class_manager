@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>班级管理系统 - 登录</title>
+    <link rel="icon" type="image/png" href="./assets/icon.png">
+    <!-- Tailwind CSS -->
+    <script src="./lib/tailwindcss@3.js"></script>
+    <link rel="stylesheet" href="./lib/daisyui@4.7.2.css">
+    <script src="./lib/alpinejs@3.js" defer></script>
+
+    <style>
+        ::-webkit-scrollbar {
+            width: 0px;
+        }
+    </style>
+</head>
+<body>
+    <div x-data="app()" class="min-h-screen flex items-center justify-center p-4">
+        <div class="card w-full max-w-md shadow-2xl bg-base-100 animate-float">
+            <div class="card-body">
+                <!-- 标题 -->
+                <div class="flex flex-col items-center mb-8">
+                    <img src="./assets/icon.png" class="w-20 h-20 mb-4" alt="系统图标">
+                    <h1 class="text-3xl font-bold text-primary">班级管理系统</h1>
+                    <p class="text-sm text-gray-500 mt-2">欢迎回来，请先登录</p>
+                </div>
+
+                <!-- 登录表单 -->
+                <form @submit.prevent="submitLogin" class="space-y-4">
+                    <!-- 用户名 -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text text-gray-600">用户名</span>
+                        </label>
+                        <input 
+                            x-model="username"
+                            type="text" 
+                            placeholder="请输入用户名"
+                            class="input input-bordered input-primary focus:input-secondary transition-all"
+                            required
+                        >
+                    </div>
+
+                    <!-- 密码 -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text text-gray-600">密码</span>
+                        </label>
+                        <input 
+                            x-model="password"
+                            type="password" 
+                            placeholder="请输入密码" 
+                            class="input input-bordered input-primary focus:input-secondary transition-all"
+                            required
+                        >
+                    </div>
+
+                    <!-- 错误提示 -->
+                    <div x-show="error" x-transition.opacity class="alert alert-error shadow-lg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span x-text="error"></span>
+                    </div>
+
+                    <!-- 登录按钮 -->
+                    <div x-data="{ loading: false }" class="form-control mt-6">
+                        <button 
+                            class="btn btn-primary hover:btn-secondary transition-colors"
+                            :class="{ 'loading': loading }"
+                            type="submit"
+                            :disabled="loading"
+                        >
+                            <span x-show="!loading">立即登录</span>
+                            <span x-show="loading">登录中...</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="./js/login.js"></script>
+</body>
+</html>

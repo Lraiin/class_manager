@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>平顶山一中新区 班级积分管理系统</title>
+    <link rel="icon" type="image/png" href="./assets/icon.png">
+    <!-- Tailwind CSS -->
+    <script src="./lib/tailwindcss@3.js"></script>
+    <link rel="stylesheet" href="./lib/daisyui@4.7.2.css">
+
+    <script src="./lib/alpinejs@3.js" defer></script>
+
+    <style>
+      ::-webkit-scrollbar {
+        width: 0px;
+      }
+    </style>
+</head>
+<body x-data="app()">
+    <div class="navbar bg-base-100 shadow-sm">
+        <div class="navbar-start">
+          <div class="dropdown">
+            <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"> <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h8m-8 6h16" /> </svg>
+            </div>
+            <ul
+              tabindex="0"
+              class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
+              <li><a href="/">首页</a></li>
+              <li><a href="/operations.html">计数日志</a></li>
+              <li><a href="/operations.html">更多操作</a></li>
+            </ul>
+          </div>
+          <a class="btn btn-ghost text-xl">
+            <img src="./assets/icon.png" class="w-8" alt="">
+            班级积分管理
+          </a>
+        </div>
+        <div class="navbar-center hidden lg:flex">
+          <ul class="menu menu-horizontal px-1  w-[20rem] flex justify-between">
+            <li><a href="/">首页</a></li>
+            <li><a href="log.html">计分日志</a></li>
+            <li><a href="operations.html">更多操作</a></li>
+          </ul>
+        </div>
+        <div class="navbar-end">
+          <a href="ai.html" class="btn">AI 辅助分析</a>
+        </div>
+    </div>
+    <!-- 内容 -->
+    <main class="flex-col flex justify-center items-center p-10">
+      <!-- 头部功能 -->
+      <div class="flex justify-between rounded-box border border-base-content/5 bg-base-100 w-9/12 shadow-sm p-6">
+        <input x-model="searchQuery" type="text" placeholder="搜索学生名字" class="input input-bordered"/>
+        <button @click="showAddStudentModal = true" class="btn btn-outline">增添学生</button>
+      </div>
+      <!-- 表格 -->
+      <div class="overflow-x-auto rounded-box border border-base-content/5 bg-base-100 w-9/12 mt-10">
+        <table class="table">
+          <!-- head -->
+          <thead>
+            <tr>
+              <th></th>
+              <th class="text-base">学号</th>
+              <th class="text-base">姓名</th>
+              <th class="text-base">积分</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- row 1 -->
+            <template x-for="(student, index) in filteredStudents" :key="student.id">
+              <tr>
+                <div>
+                  <td x-text="index + 1" class="text-base">1</td>
+                  <td x-text="student.id" class="text-base">1184220836</td>
+                  <td x-text="student.name" class="text-base">沙增超</td>
+                  <td x-text="student.credits" class="text-base">50</td>
+                </div>
+                <td x-data="{ 
+                      ...describe_data(), 
+                      credits_value: 0,
+                      selected_description: ''
+                    }" 
+                    class="flex justify-end">
+                  <div class="flex gap-3">
+                    <input 
+                      x-model.number="credits_value"
+                      name="credits_state_input" 
+                      placeholder="分数" 
+                      type="number" 
+                      step="0.5" 
+                      class="input input-bordered w-20">
+
+                    <template x-if="credits_value == 0">
+                      <select class="select disabled">
+                        <option disabled selected>计分 - 选择原因</option>
+                      </select>
+                    </template> 
+
+                    <template x-if="credits_value > 0">
+                      <select x-model="selected_description" class="select select-success">
+                        <option value="" disabled selected>加分 - 原因备注</option>
+                        <template x-for="describe in addCredits_description">
+                          <option x-text="describe"></option>
+                        </template>
+                      </select>
+                    </template>
+
+                    <template x-if="credits_value < 0">
+                      <select x-model="selected_description" class="select select-error">
+                        <option value="" disabled selected>扣分 - 原因备注</option>
+                        <template x-for="describe in subtractCredits_description">
+                          <option x-text="describe"></option>
+                        </template>
+                      </select>
+                    </template>
+
+                    <button 
+                    @click="submit_changeCredits(
+                      student.id, 
+                      credits_value, 
+                      selected_description
+                    )"
+                    class="btn btn-outline btn-success">提交</button>
+                    <button class="btn btn-outline btn-error" @click="deleteStudent(student.id)">删除</button>
+                  </div>
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <!-- 弹窗 - 添加学生 -->
+    <template x-if="showAddStudentModal">
+      <div class="modal modal-open">
+          <div class="modal-box">
+              <h3 class="font-bold text-lg">添加新学生</h3>
+              
+              <div class="form-control">
+                  <label class="label">
+                      <span class="label-text">学号</span>
+                  </label>
+                  <input x-model="newStudent.id" type="number" value="0" class="input input-bordered">
+              </div>
+
+              <div class="form-control">
+                  <label class="label">
+                      <span class="label-text">姓名</span>
+                  </label>
+                  <input x-model="newStudent.name" type="text" class="input input-bordered">
+              </div>
+
+              <div class="form-control">
+                  <label class="label">
+                      <span class="label-text">初始积分</span>
+                  </label>
+                  <input x-model="newStudent.credits" type="number" step="0.5" value="0" class="input input-bordered">
+              </div>
+
+              <div class="modal-action">
+                  <button @click="showAddStudentModal = false" class="btn">取消</button>
+                  <button @click="addStudent()" class="btn btn-primary">确认添加</button>
+              </div>
+          </div>
+      </div>
+    </template>
+
+  <script src="./js/main.js"></script>
+  <script src="./js/describe_data.js"></script>
+
+  <script>
+    $(document).ready(function () {
+      if(location.href.indexOf("#reloaded")==-1){
+        location.href=location.href+"#reloaded";
+        location.reload();
+      }
+    });
+  </script>
+</body>
+</html>
