@@ -16,15 +16,6 @@
         width: 0px;
       }
     </style>
-
-    <script>
-      $(document).ready(function () {
-        if(location.href.indexOf("#reloaded")==-1){
-          location.href=location.href+"#reloaded";
-          location.reload();
-        }
-      });
-    </script>
 </head>
 <body x-data="app()">
     <div class="navbar bg-base-100 shadow-sm">
@@ -181,3 +172,14 @@
   <script src="./js/describe_data.js"></script>
 </body>
 </html>
+
+<script>
+  window.onload = function() {
+      if (sessionStorage.getItem('autoReloaded') !== 'true') {
+          sessionStorage.setItem('autoReloaded', 'true');
+          location.reload();
+      } else {
+          sessionStorage.removeItem('autoReloaded');
+      }
+  };
+</script>
