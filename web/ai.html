@@ -8,7 +8,6 @@
     <!-- Tailwind CSS -->
     <script src="./lib/tailwindcss@3.js"></script>
     <link rel="stylesheet" href="./lib/daisyui@4.7.2.css">
-
     <script src="./lib/alpinejs@3.js" defer></script>
 
     <style>
@@ -17,7 +16,7 @@
       }
     </style>
 </head>
-<body>
+<body x-data="app()">
     <!-- 导航栏 -->
     <div class="navbar bg-base-100 shadow-sm">
         <div class="navbar-start">
@@ -59,15 +58,15 @@
             <div class="label">
               <span class="label-text">请设置你的 DeepSeek API_KEY</span>
             </div>
-            <input type="text" placeholder="sk-" class="input input-bordered max-w-xs">
+            <input x-model="deepseek_key" type="text" placeholder="sk-" class="input input-bordered max-w-xs">
           </label>
   
           <label class="form-control max-w-xs">
             <div class="label">
               <span class="label-text">选择要分析的周期</span>
             </div>
-            <select class="select select-bordered">
-              <option disabled selected>选择时间</option>
+            <select x-model="period" class="select select-bordered">
+              <option value="" disabled selected>选择时间</option>
               <option>一天内</option>
               <option>七天内</option>
               <option>一月内</option>
@@ -75,7 +74,7 @@
           </label>
         </div>
 
-        <button class="btn btn-outline btn-info">开始分析</button>
+        <button @click="submitAnalysis()" class="btn btn-outline btn-info">开始分析</button>
 
       </div>
       <!-- AI -->
@@ -87,10 +86,17 @@
             </div>
           </div>
           <div class="chat-bubble">
-            <p>AI 功能尚未完善哦。</p>
+            <template x-if="!loading">
+              <div x-html="analysis_content"></div>
+            </template>
+            <template x-if="loading">
+              <span class="loading loading-bars loading-lg"></span>
+            </template>
           </div>
         </div>
       </div>
     </main>
+
+    <script src="./js/ai.js"></script>
 </body>
 </html>
