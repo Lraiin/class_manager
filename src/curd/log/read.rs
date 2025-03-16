@@ -77,3 +77,44 @@ pub async fn log_list() -> impl Responder {
     }
     HttpResponse::Ok().json(log_vec)
 }
+
+// ---------- ---------- ---------- o(￣┰￣*)ゞ ---------- ---------- ---------- //
+
+// 获取日志
+pub fn period_log(period: &str) -> Result<String, rusqlite::Error> {
+    let conn = Connection::open("./data/log.db").unwrap();
+
+    let sql = format!(
+        "SELECT time, id, name, credits, description
+        FROM log
+        WHERE {}
+        ORDER BY time DESC",
+        period
+    );
+
+    let mut stmt = conn.prepare(&sql)?;
+    let row_iter = stmt.query_map([], |row| {
+        Ok(format!(
+            "{:<8} | {:>8} | {:<4} | {:>12} | {}",
+            row.get::<_, String>(0)?,
+            row.get::<_, i32>(1)?,
+            row.get::<_, String>(2)?,
+            row.get::<_, f64>(3)?,
+            row.get::<_, String>(4)?
+        ))
+    })?;
+
+    // 拼接字符串
+    let mut output = String::new();
+    for row in row_iter {
+        output.push_str(&row?);
+        output.push('\n');
+    }
+
+
+    Ok(if output.is_empty() {
+        "暂无日志记录！".to_string()
+    } else {
+        output
+    })
+}

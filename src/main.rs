@@ -9,6 +9,7 @@ use curd::{init, student, log};
 use login::login_handler;
 
 mod login;
+mod deepseek;
 
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
@@ -104,6 +105,8 @@ async fn main() -> std::io::Result<()> {
             .service(log::read::log_list)
             .service(log::update::add_describe)
             .service(log::delete::delete_describe)
+
+            .service(deepseek::ai_analysis)
 
             .service(Files::new("/", "./web").index_file("index.html"))
 
