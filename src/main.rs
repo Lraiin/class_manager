@@ -36,7 +36,7 @@ async fn main() -> std::io::Result<()> {
         System: student management system  
         Version: 0.1.0
         Author: @Lraiin -> Lraiin@outlook.com
-        Git Repository: https://atomgit.com/shazengchao/class_manager
+        Git Repository: https://github.com/Lraiin/class_manager
 
         URL: 0.0.0.0:3737
     "#;
